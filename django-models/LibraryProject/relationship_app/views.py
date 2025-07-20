@@ -1,21 +1,27 @@
 from django.shortcuts import render
 from .models import Book
 from django.views.generic.detail import DetailView
+from django.http import HttpResponse
 from .models import Library
 
 # Create your views here.
-def list_books(request):
+def book_list(request):
     books = Book.objects.all()
-    book_list = [f"{book.title} by {book.author}" for book in books]
-    return render(request, 'books_list.html', {'book_list': book_list})
+    output = "<h2>All Books</h2><ul>"
+    for book in books:
+        output += f"<li>{book.title} by {book.author}</li>"
+    output += "</ul>"
+    return HttpResponse(output)
 
-    class LibraryDetailView(DetailView):
-        model = Library
-        template_name = 'library_detail.html'
-        context_object_name = 'library'
+class BookDetailView(DetailView):
+    model = Library
+    template_name = 'list_books.html'
+    context_object_name = 'book'
 
-        def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)
-            context['books'] = self.object.book_set.all()
-            return context
+class LibraryDetailView(DetailView):
+    model = Library
+    template_name = 'library_detail.html'
+    context_object_name = 'library'
+
+    
 
