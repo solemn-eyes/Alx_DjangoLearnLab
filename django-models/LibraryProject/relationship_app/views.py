@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect
-from .models import Book, Library
+from django.shortcuts import render
+from django.shortcuts import redirect
+from .models import Book
+from .models import Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
