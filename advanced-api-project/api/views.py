@@ -20,7 +20,7 @@ class BookListView(generics.ListAPIView):
     search_fields = ['title', 'author']
    
     filter_backends = [OrderingFilter]
-    ordering_fields = ['title', 'published_year']
+    ordering_fields = ['title', 'publication_year']
 
 # View to get a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
