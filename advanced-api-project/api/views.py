@@ -1,45 +1,37 @@
-from django.shortcuts import render
-from django import views
-from django.contrib.auth.mixins import LoginRequiredMixin  
+from rest_framework import generics, permissions
+from .models import Book
+from .serializers import BookSerializer
 
+# View to get all books
+class BookListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
-# Create your views here.
+# View to get a single book by ID
+class BookDetailView(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
-# Creating views for the Book model
+# View to create a new book
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-class BookListView(views.View):
-    def get(self, request):
-        # Logic to retrieve and return a list of books
-        return render(request, 'book_list.html')
+    def perfom_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
-class BookDetailView(views.View):
-    def get(self, request, book_id):
-        # Logic to retrieve and return details of a specific book
-        return render(request, 'book_detail.html', {'book_id': book_id})
-    
-class BookCreateView(LoginRequiredMixin, views.View):  # Restrict to authenticated users
-    def get(self, request):
-        # Logic to display a form for creating a new book
-        return render(request, 'book_form.html')
+# View to update an existing book
+class BookUpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request):
-        # Logic to handle the form submission and create a new book
-        return render(request, 'book_success.html')
-    
-class BookUpdateView(LoginRequiredMixin, views.View):  # Restrict to authenticated users
-    def get(self, request, book_id):
-        # Logic to display a form for updating an existing book
-        return render(request, 'book_form.html', {'book_id': book_id})
+# View to delete a book
+class BookDeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, book_id):
-        # Logic to handle the form submission and update the book
-        return render(request, 'book_success.html', {'book_id': book_id})
-    
-class BookDeleteView(LoginRequiredMixin, views.View):  # Restrict to authenticated users
-    def get(self, request, book_id):
-        # Logic to confirm deletion of a book
-        return render(request, 'book_confirm_delete.html', {'book_id': book_id})
-
-    def post(self, request, book_id):
-        # Logic to handle the deletion of a book
-        return render(request, 'book_deleted.html', {'book_id': book_id})
